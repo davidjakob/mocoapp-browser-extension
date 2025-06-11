@@ -213,4 +213,29 @@ export default {
     projectId: (document) => projectIdentifierBySelector(".current-project")(document),
     allowHostOverride: true,
   },
+
+  visualstudiocom: {
+    name: "visualstudiocom",
+    host: "https://:org.visualstudio.com",
+    urlPatterns: [":host:/:project/_workitems/edit/:id(/*)"],
+    description: (document, _service, { project, id }) => {
+      // The project name is used as a fallback for the issue title
+      const issueTitle = document.querySelector(".work-item-title-textfield>input")?.value.trim() || decodeURIComponent(project)
+      return id ? `${id}: ${issueTitle}` : issueTitle
+    },
+    projectId: (document) => projectIdentifierBySelector(".project-item span:nth-child(2)")(document),
+    allowHostOverride: false,
+  },
+
+  azuredevops: {
+    name: "azuredevops",
+    host: "https://dev.azure.com",
+    urlPatterns: [":host:/:org/:project/_workitems/edit/:id(/*)"],
+    description: (document, _service, { project, id }) => {
+      const issueTitle = document.querySelector(".work-item-title-textfield>input")?.value.trim() || decodeURIComponent(project)
+      return id ? `${id}: ${issueTitle}` : issueTitle
+    },
+    projectId: (document) => projectIdentifierBySelector(".project-item span:nth-child(2)")(document),
+    allowHostOverride: false,
+  }
 }
